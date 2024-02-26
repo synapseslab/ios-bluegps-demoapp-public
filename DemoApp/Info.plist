@@ -8,10 +8,10 @@
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
 			<key>CFBundleURLName</key>
-			<string>incubtestapp</string>
+			<string>demo</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>incubtestapp</string>
+				<string>demo</string>
 			</array>
 		</dict>
 	</array>
