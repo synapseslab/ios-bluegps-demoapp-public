@@ -159,3 +159,4 @@ Dependencies/
 /*.gcno
 **/xcshareddata/WorkspaceSettings.xcsettings
 Package.resolved
+*.xcuserstate
