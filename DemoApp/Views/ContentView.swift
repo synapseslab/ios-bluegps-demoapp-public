@@ -17,11 +17,27 @@ struct ContentView: View {
             VStack(alignment: .leading) {
                 loginButton
                 Spacer().frame(height: 20)
+                backgroundLogin
+                Spacer().frame(height: 20)
                 createConfigButton
+                Spacer().frame(height: 20)
+                createBooking
                 Spacer().frame(height: 20)
                 simpleMapButton
                 Spacer().frame(height: 20)
                 mapWithResourcesButton
+                Divider()
+                VStack {
+                    Text("Debug log output")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    TextEditor(text: Binding.constant(sdkViewModel.debugLog))
+                    .font(.caption2)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
                 Spacer()
             }
             .padding()
@@ -67,6 +83,66 @@ extension ContentView {
                 .font(.caption2).foregroundStyle(.secondary)
         }
     }
+
+    @ViewBuilder private var backgroundLogin: some View {
+        VStack(alignment: .trailing) {
+            Button(action: {
+                if sdkViewModel.authenticated {
+                    sdkViewModel.logout()
+                } else {
+                    sdkViewModel.backgroundLogin()
+                }
+            }, label: {
+                HStack {
+                    Image(systemName: sdkViewModel.authenticated ? "lock.icloud.fill" : "icloud.fill")
+                        .imageScale(.large)
+                        .foregroundStyle(.tint)
+                    Text(sdkViewModel.authenticated ? "Logout" : "Background login")
+                }
+            })
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(.secondary.opacity(0.2))
+            .clipShape(RoundedRectangle(cornerRadius: 8.0))
+            Text(sdkViewModel.authenticated ? "Logged in" : "Not authenticated")
+                .font(.caption2).foregroundStyle(.secondary)
+        }
+    }
+
+    @ViewBuilder private var createBooking: some View {
+        HStack {
+            Button(action: {
+                sdkViewModel.createBooking()
+            }, label: {
+                HStack {
+                    Image(systemName: "calendar")
+                        .imageScale(.large)
+                        .foregroundStyle(.tint)
+                    Text("Book resource")
+                }
+            })
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(.secondary.opacity(0.2))
+            .clipShape(RoundedRectangle(cornerRadius: 8.0))
+
+            Button(action: {
+                sdkViewModel.deleteBooking()
+            }, label: {
+                HStack {
+                    Image(systemName: "calendar")
+                        .imageScale(.large)
+                        .foregroundStyle(.tint)
+                    Text("Delete booking")
+                }
+            })
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(.secondary.opacity(0.2))
+            .clipShape(RoundedRectangle(cornerRadius: 8.0))
+        }
+    }
+
 
     @ViewBuilder private var createConfigButton: some View {
         VStack(alignment: .trailing) {

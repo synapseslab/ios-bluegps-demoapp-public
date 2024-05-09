@@ -11,7 +11,7 @@ import SynapsesSDK
 @MainActor
 class SDKViewModel: ObservableObject {
     @Published var authenticated: Bool = false
-    @Published var error: Error?
+    @Published var debugLog: String = ""
     @Published var networkConfig: NetworkResponseConfiguration?
     @Published var isAdvertising: Bool = false
     @Published var advertisingError: String?
@@ -34,9 +34,15 @@ class SDKViewModel: ObservableObject {
                 BlueGPS.setupSDK(EnvironmentModel(endpoint: "https://your.default.url/",
                                                   keycloakEnv: authEnv))
 
-                let _ = try await BlueGPS.shared.networkSetup()
+                _ = try await BlueGPS.shared.networkSetup()
+                debugLog.append("\nSDK Initialized successfully")
             } catch {
-                NSLog("\(error)")
+                NSLog(error.localizedDescription)
+                if let error = error as? APIError {
+                    self.debugLog.append(contentsOf: "\n\(error.responseMessage.trace ?? error.localizedDescription)")
+                } else {
+                    self.debugLog.append(contentsOf: "\n\(error.localizedDescription)")
+                }
             }
         }
     }
@@ -44,11 +50,33 @@ class SDKViewModel: ObservableObject {
     func login() {
         Task {
             do {
-                let _ = try await BlueGPS.shared.keycloakLogin()
+                _ = try await BlueGPS.shared.keycloakLogin()
                 authenticated = true
+                debugLog.append("\nUser logged successfully")
             } catch {
-                self.error = error
                 NSLog(error.localizedDescription)
+                if let error = error as? APIError {
+                    self.debugLog.append(contentsOf: "\n\(error.responseMessage.trace ?? error.localizedDescription)")
+                } else {
+                    self.debugLog.append(contentsOf: "\n\(error.localizedDescription)")
+                }
+            }
+        }
+    }
+
+    func backgroundLogin() {
+        Task {
+            do {
+                _ = try await BlueGPS.shared.backgroundLogin(username: "testuser", password: "testUser#2023!")
+                authenticated = true
+                debugLog.append("\nUser logged successfully")
+            } catch {
+                NSLog(error.localizedDescription)
+                if let error = error as? APIError {
+                    self.debugLog.append(contentsOf: "\n\(error.responseMessage.trace ?? error.localizedDescription)")
+                } else {
+                    self.debugLog.append(contentsOf: "\n\(error.localizedDescription)")
+                }
             }
         }
     }
@@ -56,11 +84,16 @@ class SDKViewModel: ObservableObject {
     func guestLogin() {
         Task {
             do {
-                let _ = try await BlueGPS.shared.keycloakGuestLogin()
+                _ = try await BlueGPS.shared.keycloakGuestLogin()
                 authenticated = true
+                debugLog.append("\nGuest logged successfully")
             } catch {
-                self.error = error
                 NSLog(error.localizedDescription)
+                if let error = error as? APIError {
+                    self.debugLog.append(contentsOf: "\n\(error.responseMessage.trace ?? error.localizedDescription)")
+                } else {
+                    self.debugLog.append(contentsOf: "\n\(error.localizedDescription)")
+                }
             }
         }
     }
@@ -68,10 +101,15 @@ class SDKViewModel: ObservableObject {
     func logout() {
         KeycloakManager.shared?.logout() { [weak self] _, error in
             if let error {
-                self?.error = error
                 NSLog(error.localizedDescription)
+                if let error = error as? APIError {
+                    self?.debugLog.append(contentsOf: "\n\(error.responseMessage.trace ?? error.localizedDescription)")
+                } else {
+                    self?.debugLog.append(contentsOf: "\n\(error.localizedDescription)")
+                }
             } else {
                 self?.authenticated = false
+                self?.debugLog.append("\nLogout completed successfully")
             }
         }
     }
@@ -80,9 +118,71 @@ class SDKViewModel: ObservableObject {
         Task {
             do {
                 networkConfig = try await BlueGPS.shared.getOrCreateConfiguration(tagid: tagId)
+                debugLog.append("GetOrCreateConfiguration completed successfully.\nTagid: \(networkConfig?.iosadvConf.tagid ?? "n/a")")
             } catch {
-                self.error = error
-                NSLog("\(error.localizedDescription)")
+                NSLog(error.localizedDescription)
+                if let error = error as? APIError {
+                    self.debugLog.append(contentsOf: "\n\(error.responseMessage.trace ?? error.localizedDescription)")
+                } else {
+                    self.debugLog.append(contentsOf: "\n\(error.localizedDescription)")
+                }
+            }
+        }
+    }
+
+    func createBooking() {
+        Task {
+            do {
+                // create a schedule request according to your resource
+                let scheduleRequest = ScheduleRequest(
+                    elementId: "your.resource.id.goes.here",
+                    elementType: ResourceType.ROOM,
+                    meetingName: "meetingName",
+                    meetingNote: "meetingDescription",
+                    dayStart: "2024-05-09",
+                    start: "11:00",
+                    end: "12:00")
+                let response = try await BlueGPS.shared.schedule(scheduleRequest)
+                debugLog.append("\nBooking completed: \(response.bookingId ?? "n/a")")
+            } catch {
+                NSLog(error.localizedDescription)
+                if let error = error as? APIError {
+                    self.debugLog.append(contentsOf: "\n\(error.responseMessage.trace ?? error.localizedDescription)")
+                } else {
+                    self.debugLog.append(contentsOf: "\n\(error.localizedDescription)")
+                }
+            }
+        }
+    }
+
+    func fetchAgenda() {
+        Task {
+            do {
+                let response = try await BlueGPS.shared.getAgendaMy(dateStart: nil, dateEnd: nil)
+                debugLog.append("\ngetAgendaMy: \(response)")
+            } catch {
+                NSLog(error.localizedDescription)
+                if let error = error as? APIError {
+                    self.debugLog.append(contentsOf: "\n\(error.responseMessage.trace ?? error.localizedDescription)")
+                } else {
+                    self.debugLog.append(contentsOf: "\n\(error.localizedDescription)")
+                }
+            }
+        }
+    }
+
+    func deleteBooking() {
+        Task {
+            do {
+                _ = try await BlueGPS.shared.deleteSchedule(resourceId: "your.booking.id.goes.here")
+                self.debugLog.append(contentsOf: "\nBooking successfully deleted.")
+            } catch {
+                NSLog(error.localizedDescription)
+                if let error = error as? APIError {
+                    self.debugLog.append(contentsOf: "\n\(error.responseMessage.trace ?? error.localizedDescription)")
+                } else {
+                    self.debugLog.append(contentsOf: "\n\(error.localizedDescription)")
+                }
             }
         }
     }
@@ -91,9 +191,14 @@ class SDKViewModel: ObservableObject {
         Task {
             do {
                 networkConfig = try await BlueGPS.shared.getOrCreateConfiguration()
+                debugLog.append("GetOrCreateConfiguration completed successfully.\nTagid: \(networkConfig?.iosadvConf.tagid ?? "n/a")")
             } catch {
-                self.error = error
-                NSLog("\(error.localizedDescription)")
+                NSLog(error.localizedDescription)
+                if let error = error as? APIError {
+                    self.debugLog.append(contentsOf: "\n\(error.responseMessage.trace ?? error.localizedDescription)")
+                } else {
+                    self.debugLog.append(contentsOf: "\n\(error.localizedDescription)")
+                }
             }
         }
     }
@@ -112,6 +217,12 @@ class SDKViewModel: ObservableObject {
                     self.advertisingError = error.localizedDescription
                 }
                 isAdvertising = false
+                NSLog(error.localizedDescription)
+                if let error = error as? APIError {
+                    self.debugLog.append(contentsOf: "\n\(error.responseMessage.trace ?? error.localizedDescription)")
+                } else {
+                    self.debugLog.append(contentsOf: "\n\(error.localizedDescription)")
+                }
             }
         }
     }
@@ -159,6 +270,12 @@ class SDKViewModel: ObservableObject {
                 self.searchError = apiError.localizedDescription
             } else {
                 self.searchError = error.localizedDescription
+            }
+            NSLog(error.localizedDescription)
+            if let error = error as? APIError {
+                self.debugLog.append(contentsOf: "\n\(error.responseMessage.trace ?? error.localizedDescription)")
+            } else {
+                self.debugLog.append(contentsOf: "\n\(error.localizedDescription)")
             }
             throw error
         }
