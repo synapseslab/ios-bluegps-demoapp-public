@@ -19,6 +19,7 @@ class SDKViewModel: ObservableObject {
     @Published var resources: [Resource]?
     @Published var locatingEnabled: Bool = false
     @Published var locatingError: String?
+    private var bookingId: String?
 
     func commonInit() {
         Task.init { // init SynapsesSDK
@@ -67,7 +68,7 @@ class SDKViewModel: ObservableObject {
     func backgroundLogin() {
         Task {
             do {
-                _ = try await BlueGPS.shared.backgroundLogin(username: "testuser", password: "testUser#2023!")
+                _ = try await BlueGPS.shared.backgroundLogin(username: "your.username", password: "your.password")
                 authenticated = true
                 debugLog.append("\nUser logged successfully")
             } catch {
@@ -140,10 +141,14 @@ class SDKViewModel: ObservableObject {
                     meetingName: "meetingName",
                     meetingNote: "meetingDescription",
                     dayStart: "2024-05-09",
-                    start: "11:00",
-                    end: "12:00")
+                    start: "15:00",
+                    end: "16:00")
                 let response = try await BlueGPS.shared.schedule(scheduleRequest)
-                debugLog.append("\nBooking completed: \(response.bookingId ?? "n/a")")
+                if let bookingId = response.bookingId
+                {
+                    self.bookingId = bookingId
+                    debugLog.append("\nBooking completed: \(response.bookingId ?? "n/a")")
+                }
             } catch {
                 NSLog(error.localizedDescription)
                 if let error = error as? APIError {
@@ -172,9 +177,13 @@ class SDKViewModel: ObservableObject {
     }
 
     func deleteBooking() {
+        guard let bookingId else {
+            self.debugLog.append(contentsOf: "\nThere're no booking to delete.")
+            return
+        }
         Task {
             do {
-                _ = try await BlueGPS.shared.deleteSchedule(resourceId: "your.booking.id.goes.here")
+                _ = try await BlueGPS.shared.deleteSchedule(bookingId: bookingId)
                 self.debugLog.append(contentsOf: "\nBooking successfully deleted.")
             } catch {
                 NSLog(error.localizedDescription)

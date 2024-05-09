@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/synapseslab/ios-bluegps-sdk-public",
       "state" : {
-        "revision" : "b80cf7b6b682142d3beb154234668e5d39a01ec7",
-        "version" : "1.0.89"
+        "revision" : "d3997d314c473f46bd8498bf7529d10956167471",
+        "version" : "1.0.90"
       }
     }
   ],
