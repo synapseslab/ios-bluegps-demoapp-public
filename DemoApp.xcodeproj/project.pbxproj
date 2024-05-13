@@ -27,7 +27,6 @@
 		2B6CD9242B6D0A79008EBDE4 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2B6CD9232B6D0A79008EBDE4 /* Preview Assets.xcassets */; };
 		2B6CD9312B6D4221008EBDE4 /* SDKViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B6CD9302B6D4221008EBDE4 /* SDKViewModel.swift */; };
 		2B6CD9382B6D4701008EBDE4 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B6CD9372B6D4701008EBDE4 /* MapView.swift */; };
-		2B72969B2B8CE9BC00E711BA /* ios-bluegps-sdk-public in Frameworks */ = {isa = PBXBuildFile; productRef = 2B72969A2B8CE9BC00E711BA /* ios-bluegps-sdk-public */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -59,7 +58,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2B72969B2B8CE9BC00E711BA /* ios-bluegps-sdk-public in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -146,7 +144,6 @@
 			);
 			name = DemoApp;
 			packageProductDependencies = (
-				2B72969A2B8CE9BC00E711BA /* ios-bluegps-sdk-public */,
 			);
 			productName = SimpleApp;
 			productReference = 2B6CD9192B6D0A78008EBDE4 /* DemoApp.app */;
@@ -180,7 +177,6 @@
 			);
 			mainGroup = 2B6CD9102B6D0A78008EBDE4;
 			packageReferences = (
-				2B7296992B8CE9BC00E711BA /* XCRemoteSwiftPackageReference "ios-bluegps-sdk-public" */,
 			);
 			productRefGroup = 2B6CD91A2B6D0A78008EBDE4 /* Products */;
 			projectDirPath = "";
@@ -494,25 +490,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		2B7296992B8CE9BC00E711BA /* XCRemoteSwiftPackageReference "ios-bluegps-sdk-public" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/synapseslab/ios-bluegps-sdk-public";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.86;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		2B72969A2B8CE9BC00E711BA /* ios-bluegps-sdk-public */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 2B7296992B8CE9BC00E711BA /* XCRemoteSwiftPackageReference "ios-bluegps-sdk-public" */;
-			productName = "ios-bluegps-sdk-public";
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 2B6CD9112B6D0A78008EBDE4 /* Project object */;
 }

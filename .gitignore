@@ -161,3 +161,4 @@ Dependencies/
 Package.resolved
 *.xcuserstate
 UserInterfaceState.xcuserstate
+*.resolved
