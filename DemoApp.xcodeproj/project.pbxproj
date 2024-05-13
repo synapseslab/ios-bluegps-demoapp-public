@@ -177,6 +177,7 @@
 			);
 			mainGroup = 2B6CD9102B6D0A78008EBDE4;
 			packageReferences = (
+				2B001AFF2BF25576003A81ED /* XCRemoteSwiftPackageReference "ios-bluegps-sdk-public" */,
 			);
 			productRefGroup = 2B6CD91A2B6D0A78008EBDE4 /* Products */;
 			projectDirPath = "";
@@ -490,6 +491,17 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		2B001AFF2BF25576003A81ED /* XCRemoteSwiftPackageReference "ios-bluegps-sdk-public" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/synapseslab/ios-bluegps-sdk-public";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.92;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
 	};
 	rootObject = 2B6CD9112B6D0A78008EBDE4 /* Project object */;
 }
