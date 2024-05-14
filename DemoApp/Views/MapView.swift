@@ -40,8 +40,8 @@ struct MapView: UIViewControllerRepresentable {
             self.configuration = configuration
         } else {
             self.configuration = ConfigurationModel(tagid: "FOO",
-                                                    toolbox: toolbox,
-                                                    show: showModel)
+                                                    toolbox: self.toolbox,
+                                                    show: self.showModel)
         }
     }
 
