@@ -14,7 +14,7 @@ struct MapView: UIViewControllerRepresentable {
     private let mapDelegate = MapViewDelegate()
     private var url: String
     private var toolbox = ToolboxModel()
-    private var showModel = ShowModel(me: true, all: true, room: true, park: true, desk: true)
+    private var showModel = ShowModel(me: true, all: true, room: true, park: false, desk: false)
     private var configuration: ConfigurationModel
     private let resources: [Resource]?
     private let genericResource: GenericResourceModel?
@@ -117,11 +117,15 @@ fileprivate class MapViewDelegate: DynamicMapViewDelegate {
     }
     
     func didReceiveEvent(_ mapView: SynapsesSDK.DynamicMapView, event: SynapsesSDK.MapEvent, payload: Any?) {
-        NSLog("⚠️ MapViewDelegate didReceiveEvent: \(event)")
+        if let payload = payload as? GenericEventResponse {
+            NSLog("⚠️ MapViewDelegate didReceiveEvent: \(String(describing: event.decodedPayload)) - \(String(describing: payload.message))")
+        } else {
+            NSLog("⚠️ MapViewDelegate didReceiveEvent: \(String(describing: event.decodedPayload))")
+        }
     }
     
     func didReceiveError(_ mapView: SynapsesSDK.DynamicMapView, error: Error) {
-        NSLog("⚠️ MapViewDelegate didReceiveError: \(error)")
+        NSLog("⚠️ MapViewDelegate didReceiveError: \(error.localizedDescription)")
 
     }
 }
